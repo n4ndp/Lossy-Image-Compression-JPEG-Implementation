@@ -2,8 +2,15 @@ import cv2
 import numpy as np
 
 def bgr_image_to_ycrcb(image: np.ndarray) -> np.ndarray:
-    image = image.astype(np.float64)
-    ycrcb_image = np.zeros_like(image, dtype=np.float64)
+    """Convierte una imagen en formato BGR a YCrCb.
+    
+    Args:
+        image (np.ndarray): Imagen en formato BGR.
+        
+    Returns:
+        np.ndarray: Imagen convertida en formato YCrCb con valores en uint8.
+    """
+    image = image.astype(np.float32)
 
     B = image[:, :, 0]
     G = image[:, :, 1]
@@ -13,15 +20,20 @@ def bgr_image_to_ycrcb(image: np.ndarray) -> np.ndarray:
     Cr = (R - Y) * 0.713 + 128
     Cb = (B - Y) * 0.564 + 128
 
-    ycrcb_image[:, :, 0] = Y
-    ycrcb_image[:, :, 1] = Cr
-    ycrcb_image[:, :, 2] = Cb
+    ycrcb_image = np.stack((Y, Cr, Cb), axis=-1)
 
     return np.round(ycrcb_image).astype(np.uint8)
 
 def ycrcb_image_to_bgr(image: np.ndarray) -> np.ndarray:
-    image = image.astype(np.float64)
-    bgr_image = np.zeros_like(image, dtype=np.float64)
+    """Convierte una imagen en formato YCrCb a BGR.
+
+    Args:
+        image (np.ndarray): Imagen en formato YCrCb.
+        
+    Returns:
+        np.ndarray: Imagen convertida en formato BGR con valores en uint8.
+    """
+    image = image.astype(np.float32)
 
     Y = image[:, :, 0]
     Cr = image[:, :, 1] - 128
@@ -31,17 +43,13 @@ def ycrcb_image_to_bgr(image: np.ndarray) -> np.ndarray:
     G = Y - 0.344 * Cb - 0.714 * Cr
     B = Y + 1.770 * Cb
 
-    bgr_image[:, :, 0] = B
-    bgr_image[:, :, 1] = G
-    bgr_image[:, :, 2] = R
-
-    bgr_image[bgr_image > 255] = 255
-    bgr_image[bgr_image < 0] = 0
+    bgr_image = np.stack((B, G, R), axis=-1)
+    bgr_image = np.clip(bgr_image, 0, 255)
 
     return np.round(bgr_image).astype(np.uint8)
 
 if __name__ == "__main__":
-    image = cv2.imread('img/frutas.bmp')
+    image = cv2.imread('img/lena.bmp')
     
     my_ycrcb = bgr_image_to_ycrcb(image)
     cv_ycrcb = cv2.cvtColor(image, cv2.COLOR_BGR2YCrCb)

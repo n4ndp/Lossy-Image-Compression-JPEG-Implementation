@@ -5,7 +5,15 @@ from bgr_ycrcb_conversion import bgr_image_to_ycrcb, ycrcb_image_to_bgr
 from functions import pad, unpad, downsampling, upsampling
 
 def matrix_C(n: int) -> np.ndarray:
-    C = np.zeros((n, n), dtype=np.float64)
+    """Genera la matriz de coeficientes C para la Transformada Discreta del Coseno (DCT).
+    
+    Args:
+        n (int): Dimensión de la matriz C (n x n).
+
+    Returns:
+        np.ndarray: Matriz C de tamaño n x n usada para DCT o IDCT.
+    """
+    C = np.zeros((n, n), dtype=np.float32)
     
     for i in range(n):
         if i == 0:
@@ -18,28 +26,46 @@ def matrix_C(n: int) -> np.ndarray:
     
     return C
 
-def discrete_cosine_transform(image: np.ndarray, inverse: bool = False) -> np.ndarray:
+def discrete_cosine_transform(channel: np.ndarray, inverse: bool = False) -> np.ndarray:
+    """Aplica la Transformada Discreta del Coseno (DCT) o su inversa (IDCT) a un canal de imagen.
+
+    Esta función divide el canal de imagen en bloques de 8x8 y aplica la DCT o 
+    la IDCT (si inverse=True) sobre cada bloque. La DCT convierte la imagen al dominio 
+    de la frecuencia, mientras que la IDCT reconstruye la imagen desde el dominio de 
+    la frecuencia.
+
+    Args:
+        channel (np.ndarray): El canal de imagen que será transformado.
+        inverse (bool): Si es True, se aplica la Inversa de la DCT (IDCT).
+
+    Returns:
+        np.ndarray: El canal transformado (después de aplicar DCT o IDCT).
+    """
     C = matrix_C(8)
     CT = C.T
     
-    height, width = image.shape
-    transformed_image = np.zeros_like(image, dtype=np.float64)
+    height, width = channel.shape
+    
+    if height % 8 != 0 or width % 8 != 0:
+        raise ValueError('Channel dimensions must be multiples of 8.')
+    
+    transformed_channel = np.zeros_like(channel, dtype=np.float32)
     
     for y in range(0, height, 8):
         for x in range(0, width, 8):
-            tile = image[y:y+8, x:x+8]
+            tile = channel[y:y+8, x:x+8]
             
             if inverse:
-                transformed_tile = np.dot(CT, np.dot(tile, C))
+                transformed_tile = CT @ tile @ C
             else:
-                transformed_tile = np.dot(C, np.dot(tile, CT))
+                transformed_tile = C @ tile @ CT
                 
-            transformed_image[y:y+8, x:x+8] = transformed_tile
+            transformed_channel[y:y+8, x:x+8] = transformed_tile
             
-    return transformed_image
+    return transformed_channel
 
 if __name__ == "__main__":
-    image = cv2.imread('img/frutas.bmp')
+    image = cv2.imread('img/lena.bmp')
     
     ycrcb_image = bgr_image_to_ycrcb(image)
     
