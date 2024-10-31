@@ -32,7 +32,7 @@ def scale_quant_matrix(quant_matrix: np.ndarray, quality: int) -> np.ndarray:
     else:
         scale = 200 - (quality * 2)
 
-    scaled_quant_matrix = np.floor((quant_matrix * scale + 50) / 100)
+    scaled_quant_matrix = np.floor((quant_matrix * scale + 50) / 100).astype(np.int32)
     scaled_quant_matrix[scaled_quant_matrix == 0] = 1
     
     return scaled_quant_matrix
