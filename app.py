@@ -1,7 +1,9 @@
 import cv2
 import numpy as np
-import argparse
+import tkinter as tk
+from tkinter import filedialog, messagebox
 from datetime import datetime
+from PIL import Image, ImageTk
 
 from src.bgr_ycrcb_conversion import bgr_image_to_ycbcr, ycbcr_image_to_bgr
 from src.functions import apply_padding, remove_padding, downsample, upsample
@@ -136,22 +138,77 @@ def decompress_image(filename: str) -> tuple:
     
     return bgr_image, datetime.now() - start
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Compresión y descompresión de imágenes JPEG.")
-    parser.add_argument("image_path", type=str, help="Ruta de la imagen a comprimir/descomprimir.")
-    parser.add_argument("quality", type=int, help="Calidad de la compresión (1-100).")
-    parser.add_argument("output_file", type=str, help="Nombre del archivo de salida para la imagen comprimida.")
-    args = parser.parse_args()
-    
-    image = cv2.imread(args.image_path)
 
-    compression_time = compress_image(image, args.quality, args.output_file)
-    decompressed_image, decompression_time = decompress_image(args.output_file)
+class JPEGCompressorApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Compresor JPEG")
+        
+        self.image = None
+        self.compressed_image_path = None
+        
+        self.load_button = tk.Button(root, text="Cargar Imagen", command=self.load_image)
+        self.load_button.pack()
+        
+        self.quality_label = tk.Label(root, text="Calidad (1-100):")
+        self.quality_label.pack()
+        self.quality_entry = tk.Entry(root)
+        self.quality_entry.insert(0, "50")
+        self.quality_entry.pack()
+        
+        self.compress_button = tk.Button(root, text="Comprimir Imagen", command=self.compress_image)
+        self.compress_button.pack()
+        
+        self.decompress_button = tk.Button(root, text="Descomprimir Imagen", command=self.decompress_image)
+        self.decompress_button.pack()
+        
+        self.image_label = tk.Label(root)
+        self.image_label.pack()
+        
+        self.time_label = tk.Label(root, text="")
+        self.time_label.pack()
     
-    print(f"Compression time: {compression_time}")
-    print(f"Decompression time: {decompression_time}")
-    
-    cv2.imshow("Original Image", image)
-    cv2.imshow("Decompressed Image", decompressed_image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    def load_image(self):
+        file_path = filedialog.askopenfilename(filetypes=[("Archivos de Imagen", "*.bmp;*.jpeg;*.jpg;*.png")])
+        if file_path:
+            self.image = cv2.imread(file_path)
+            image_display = Image.fromarray(cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB))
+            image_display = ImageTk.PhotoImage(image_display)
+            self.image_label.config(image=image_display)
+            self.image_label.image = image_display
+
+    def compress_image(self):
+        if self.image is None:
+            messagebox.showerror("Error", "Por favor, cargue una imagen primero.")
+            return
+        
+        quality = int(self.quality_entry.get())
+        if not (1 <= quality <= 100):
+            messagebox.showerror("Error", "La calidad debe estar entre 1 y 100.")
+            return
+        
+        filename = filedialog.asksaveasfilename(defaultextension=".jpeg", filetypes=[("JPEG", "*.jpeg")])
+        if filename:
+            compression_time = compress_image(self.image, quality, filename)
+            self.time_label.config(text=f"Tiempo de Compresión: {compression_time}")
+            self.compressed_image_path = filename
+            messagebox.showinfo("Éxito", "¡Imagen comprimida con éxito!")
+            
+    def decompress_image(self):
+        if not self.compressed_image_path:
+            messagebox.showerror("Error", "Por favor, comprima una imagen primero.")
+            return
+        
+        decompressed_image, decompression_time = decompress_image(self.compressed_image_path)
+        self.time_label.config(text=f"Tiempo de Descompresión: {decompression_time}")
+        
+        image_display = Image.fromarray(cv2.cvtColor(decompressed_image, cv2.COLOR_BGR2RGB))
+        image_display = ImageTk.PhotoImage(image_display)
+        self.image_label.config(image=image_display)
+        self.image_label.image = image_display
+        messagebox.showinfo("Éxito", "¡Imagen descomprimida con éxito!")
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = JPEGCompressorApp(root)
+    root.mainloop()
