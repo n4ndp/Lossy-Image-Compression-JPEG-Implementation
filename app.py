@@ -172,10 +172,42 @@ class JPEGCompressorApp:
         file_path = filedialog.askopenfilename(filetypes=[("Archivos de Imagen", "*.bmp;*.jpeg;*.jpg;*.png")])
         if file_path:
             self.image = cv2.imread(file_path)
-            image_display = Image.fromarray(cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB))
+            
+            #########################            
+
+            screen_width = self.root.winfo_screenwidth()
+            screen_height = self.root.winfo_screenheight()
+            
+            max_width = screen_width // 2
+            max_height = screen_height // 2
+            
+            original_height, original_width = self.image.shape[:2]
+            
+            aspect_ratio = original_width / original_height
+            if original_width > max_width or original_height > max_height:
+                if original_width / max_width > original_height / max_height:
+                    new_width = max_width
+                    new_height = int(new_width / aspect_ratio)
+                else:
+                    new_height = max_height
+                    new_width = int(new_height * aspect_ratio)
+            else:
+                new_width = original_width
+                new_height = original_height
+                
+            resized_image = cv2.resize(self.image, (new_width, new_height))
+            
+            image_display = Image.fromarray(cv2.cvtColor(resized_image, cv2.COLOR_BGR2RGB))
             image_display = ImageTk.PhotoImage(image_display)
             self.image_label.config(image=image_display)
             self.image_label.image = image_display
+            
+            #########################
+
+            # image_display = Image.fromarray(cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB))
+            # image_display = ImageTk.PhotoImage(image_display)
+            # self.image_label.config(image=image_display)
+            # self.image_label.image = image_display
 
     def compress_image(self):
         if self.image is None:
