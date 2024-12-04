@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compresión y Descompresión JPEG</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Hachi+Maru+Pop&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap"
+        rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <style>
+        body {
+            font-family: 'Source Code Pro', monospace;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #E0E0E0;
+        }
+
+        header {
+            background-color: #1E1E1E;
+            color: #00BFFF;
+            padding: 40px 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        header h1 {
+            font-family: 'Hachi Maru Pop', cursive;
+            font-size: 3.5rem;
+            font-weight: 400;
+            margin: 0;
+        }
+
+        .container {
+            width: 85%;
+            margin: 40px auto;
+            display: flex;
+            flex-direction: column;
+            gap: 60px;
+        }
+
+        .section-title {
+            font-family: 'Hachi Maru Pop', cursive;
+            text-align: center;
+            font-size: 2.5rem;
+            color: #00BFFF;
+            margin-bottom: 20px;
+        }
+
+        .repo-link {
+            display: block;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.4rem;
+        }
+
+        .repo-link a {
+            background-color: #000000;
+            color: white;
+            text-decoration: none;
+            font-weight: 666;
+            padding: 15px 30px;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .repo-link a:hover {
+            background-color: #00BFFF;
+            transform: scale(1.05);
+        }
+
+        .repo-link a:focus {
+            outline: none;
+        }
+
+        .repo-link i {
+            font-size: 1.5rem;
+        }
+
+        .results-section,
+        .explanation-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .results-section img,
+        .explanation-section img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #1F1F1F;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: box-shadow 0.3s;
+        }
+
+        .step:hover {
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .step img {
+            max-width: 80%;
+            margin-bottom: 15px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #1E1E1E;
+            color: #00BFFF;
+            font-size: 1.2rem;
+        }
+
+        .explanation-section .step p {
+            font-size: 1.1rem;
+            color: #E0E0E0;
+            font-weight: 500;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+
+            .results-section,
+            .explanation-section {
+                grid-template-columns: 1fr;
+            }
+
+            header h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .repo-link a {
+                font-size: 1rem;
+                padding: 12px 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Compresión y Descompresión JPEG</h1>
+    </header>
+
+    <div class="container">
+        <section>
+            <h2 class="section-title">Repositorio y Descarga</h2>
+            <p class="repo-link">Accede al código fuente del proyecto, instrucciones de instalación y más detalles en el
+                siguiente enlace:</p>
+            <div class="repo-link">
+                <a href="https://github.com/n4ndp/Lossy-Image-Compression-JPEG-Implementation" target="_blank">
+                    Ver Repositorio en GitHub
+                </a>
+            </div>
+            <p class="repo-link">Para comenzar, clona el repositorio y sigue las instrucciones para instalar las
+                dependencias y ejecutar el código.</p>
+        </section>
+
+        <section>
+            <h2 class="section-title">Resultados del Proyecto</h2>
+            <div class="results-section">
+                <div class="image-container">
+                    <h3>Imagen Original</h3>
+                    <img src="img/web/lena.bmp" alt="Imagen Original">
+                </div>
+                <div class="image-container">
+                    <h3>Imagen Descomprimida (50%)</h3>
+                    <img src="img/web/lena_compressed.jpeg" alt="Imagen Descomprimida">
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">Paso a Paso del Algoritmo de Descompresión</h2>
+            <div class="explanation-section">
+                <div class="step">
+                    <img src="step1.jpg" alt="Paso 1">
+                    <p>Conversión de la imagen de RGB a YCbCr para separar la luminancia y crominancia.</p>
+                </div>
+                <div class="step">
+                    <img src="step2.jpg" alt="Paso 2">
+                    <p>Submuestreo de la crominancia (Cb y Cr) para reducir la cantidad de datos.</p>
+                </div>
+                <div class="step">
+                    <img src="step3.jpg" alt="Paso 3">
+                    <p>Aplicación de la Transformada Discreta del Coseno (DCT) para convertir los bloques de imagen a
+                        frecuencias.</p>
+                </div>
+                <div class="step">
+                    <img src="step4.jpg" alt="Paso 4">
+                    <p>Cuantización de los coeficientes DCT, reduciendo la precisión para la compresión.</p>
+                </div>
+                <div class="step">
+                    <img src="step5.jpg" alt="Paso 5">
+                    <p>Codificación y compresión de los datos utilizando el algoritmo de Huffman.</p>
+                </div>
+                <div class="step">
+                    <img src="step6.jpg" alt="Paso 6">
+                    <p>Descompresión y reconstrucción de la imagen original a partir de los datos comprimidos.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Proyecto de Compresión JPEG - Todos los derechos reservados</p>
+    </footer>
+
+</body>
+
+</html>

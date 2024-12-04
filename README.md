@@ -1,70 +1,120 @@
-# **Compresor y Descompresor JPEG**
+# **Compresión y Descompresión JPEG**
 
-Este proyecto implementa un algoritmo de compresión y descompresión de imágenes utilizando el formato **JPEG**, uno de los estándares más populares para la compresión de imágenes digitales. 
+Este proyecto implementa un algoritmo de compresión y descompresión de imágenes en formato JPEG utilizando Python. A través de este proceso, reducimos el tamaño de las imágenes logrando mantener calidad en ella.
 
----
+## **Requisitos**
 
-## **¿Qué es JPEG?**
+- **Python 3.x** (preferiblemente 3.7 o superior)
+- **Pip** (gestor de paquetes de Python)
+- **Git** (para clonar el repositorio)
 
-JPEG (Joint Photographic Experts Group) es un estándar para la compresión con pérdida de imágenes. Su principal ventaja es reducir significativamente el tamaño de los archivos manteniendo una calidad visual aceptable para el ojo humano. Es ideal para fotografías y gráficos complejos.
+## **Instalación**
 
-### **Pasos principales del algoritmo JPEG**
+Para empezar a utilizar este proyecto, es recomendable crear un entorno virtual para evitar conflictos con otras dependencias. A continuación se describen los pasos de instalación:
 
-1. **Conversión de color (RGB a YCbCr):**
-   - La imagen se transforma del espacio de color RGB al espacio YCbCr.  
-   - **Y (Luminancia):** Información de brillo.  
-   - **Cb, Cr (Crominancia):** Información de color.
+### **1. Clonar el Repositorio**
 
-2. **Submuestreo de crominancia:**
-   - Los componentes de color (Cb y Cr) se submuestrean (generalmente 4:2:0) para reducir su resolución, ya que el ojo humano es menos sensible a los cambios de color que a los cambios de brillo.
+Primero, debes clonar el repositorio en tu máquina local. Abre una terminal o consola y ejecuta el siguiente comando:
 
-3. **Aplicación de padding:**
-   - Para garantizar que las dimensiones de la imagen sean múltiplos de 8 (requerido por las transformaciones posteriores), se agrega relleno (padding) si es necesario.
-
-4. **Transformada Discreta del Coseno (DCT):**
-   - Convierte cada bloque de 8x8 desde el dominio espacial al dominio de frecuencias, separando información importante (frecuencias bajas) de información menos perceptible (frecuencias altas).
-
-5. **Cuantización:**
-   - Las frecuencias altas se reducen (o eliminan) dividiendo los coeficientes del bloque por una matriz de cuantización. La calidad de compresión se controla ajustando esta matriz.
-
-6. **Codificación Zigzag y RLE:**
-   - Los coeficientes se recorren en orden zigzag para agrupar ceros consecutivos, que luego se comprimen mediante **Run-Length Encoding (RLE)**.
-
-7. **Codificación Huffman:**
-   - Se utiliza para comprimir aún más los datos mediante una codificación basada en frecuencias.
-
-8. **Almacenamiento:**
-   - Se guarda la información comprimida junto con metadatos necesarios para descomprimir la imagen.
-
-9. **Descompresión:**
-   - Es el proceso inverso de los pasos anteriores, reconstruyendo la imagen original lo más cerca posible de la original.
-
----
-
-## **Estructura del proyecto**
-
-```
-📁 JPEGCompressor
-├── img/
-├── src/
-│   ├── bgr_ycrcb_conversion.py
-│   ├── functions.py
-│   ├── discrete_cosine_transform.py
-│   ├── quantization.py
-│   ├── run_length_encoding.py
-│   ├── huffman_encoding.py
-│   ├── metadata.py
-├── app.py
-├── main.py
-├── README.md
-├── .gitignore
-└── requirements.txt
+```bash
+git https://github.com/n4ndp/Lossy-Image-Compression-JPEG-Implementation.git
+cd 'Lossy-Image-Compression-JPEG-Implementation'
 ```
 
----
+### **2. Crear un Entorno Virtual**
 
-## **Cómo usar la aplicación**
+Una vez dentro de la carpeta del proyecto, crea un entorno virtual para gestionar las dependencias del proyecto de forma aislada. Ejecuta los siguientes comandos:
 
-...
+- En Linux/MacOS:
+  ```bash
+  python3 -m venv env
+  ```
 
----
+- En Windows:
+  ```bash
+  python -m venv env
+  ```
+
+### **3. Activar el Entorno Virtual**
+
+#### **En Linux/MacOS:**
+```bash
+source env/bin/activate
+```
+
+#### **En Windows:**
+```bash
+.\env\Scripts\activate
+```
+
+Verás que el nombre del entorno virtual (`env`) aparece al principio de la línea de tu terminal, lo que indica que el entorno está activo.
+
+### **4. Instalar las Dependencias**
+
+Con el entorno virtual activado, ahora instala las dependencias del proyecto. Ejecuta:
+
+```bash
+pip install -r requirements.txt
+```
+
+Este comando instalará todas las librerías necesarias para ejecutar el proyecto. Si no tienes el archivo `requirements.txt`, puedes instalar las dependencias manualmente. Las principales bibliotecas que utiliza este proyecto son:
+
+- `numpy`
+- `opencv-python`
+- `tkinter`
+- `Pillow`
+
+### **5. Ejecutar el Proyecto**
+
+Una vez que todas las dependencias estén instaladas, puedes ejecutar el proyecto. Si el script principal es un archivo llamado `app.py`, simplemente ejecuta el siguiente comando:
+
+```bash
+python app.py
+```
+
+### **6. Desactivar el Entorno Virtual**
+
+Cuando hayas terminado de trabajar en el proyecto, puedes desactivar el entorno virtual ejecutando:
+
+```bash
+deactivate
+```
+
+Esto cerrará el entorno virtual y te devolverá a tu entorno global de Python.
+
+## **Uso**
+
+1. **Abrir la Aplicación:**
+   Al ejecutar el archivo `app.py`, se abrirá una interfaz gráfica. La ventana inicial tendrá las opciones para cargar una imagen, comprimirla o descomprimirla.
+
+   **Vista inicial de la aplicación:**
+   ![Vista inicial](img/readme/foto1.png)
+
+2. **Comprimir una Imagen:**
+   - Selecciona una imagen desde tu sistema utilizando el botón **"Cargar Imagen"**.
+   - Presiona el botón **"Comprimir"** para iniciar el proceso.
+   **Vista al comprimir:**
+   ![Comprimir imagen](img/readme/foto4.png)
+
+3. **Descomprimir una Imagen:**
+   - Carga un archivo comprimido generado por la aplicación utilizando el botón **"Cargar Imagen Comprimida"**.
+   - Presiona el botón **"Descomprimir"** para reconstruir la imagen original.
+   
+   **Vista al descomprimir:**
+   ![Descomprimir imagen](img/readme/foto5.png)
+
+## **Resultados**
+
+A continuación se muestra un ejemplo de los tamaños de la imagen original y la imagen comprimida:
+   
+  ![Descomprimir imagen](img/readme/foto2.png)
+
+1. **Imagen Original:**
+   - Tamaño: 769 KB
+   - Resolución: 512512 px
+
+2. **Imagen Comprimida:**
+   - Tamaño: 47 KB
+   - Resolución: 512512 px
+
+El proceso de compresión logra reducir significativamente el tamaño del archivo sin una pérdida considerable de calidad, lo que hace que este método sea ideal para el almacenamiento y la transferencia de imágenes.
